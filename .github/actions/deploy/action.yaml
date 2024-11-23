@@ -79,7 +79,7 @@ runs:
 
     - name: Deploy with Helm
       run: |
-        helm upgrade --install ${GITHUB_SHA} ./manifests/backend \
+        helm upgrade --install ${GITHUB_SHA} ./manifests/frontend \
         --namespace default \
         --set "image.repository=${{ inputs.acr_name }}.azurecr.io/${{ inputs.image_name }}" \
         --set "image.tag=${{ inputs.image_tag }}" \
