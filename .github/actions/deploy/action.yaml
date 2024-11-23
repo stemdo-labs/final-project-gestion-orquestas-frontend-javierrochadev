@@ -73,9 +73,9 @@ runs:
       shell: bash
     - name: Delete Helm
       run: |
-        kubectl delete svc backend-service -n default
-        kubectl delete deploy backend-app -n default
         kubectl delete secret acr-secret -n default
+        kubectl delete svc frontend-service -n default
+        kubectl delete deploy frontend-app -n default
       shell: bash
 
     - name: Deploy with Helm
