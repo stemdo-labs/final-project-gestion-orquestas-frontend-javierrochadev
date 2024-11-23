@@ -84,4 +84,5 @@ runs:
         --set "image.repository=${{ inputs.acr_name }}.azurecr.io/${{ inputs.image_name }}" \
         --set "image.tag=${{ inputs.image_tag }}" \
         --set "image.pullSecret=${{ inputs.acr_secret_name }}" \
+        --set "acr.dockerconfigjson=${{ inputs.acr_secret_name }}" \
       shell: bash
