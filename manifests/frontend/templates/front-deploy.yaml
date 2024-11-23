@@ -14,9 +14,9 @@ spec:
     spec:
       containers:
       - name: frontend-app
-        image: "{{ .Values.image.repository}}/{{ .Values.image.tag}}"
+        image: "{{ .Values.image.repository}}:{{ .Values.image.tag}}"
         ports:
         - containerPort: 80
-      imagePullSecrets:
-      - name: acr-secret   # Aquí agregamos la referencia al secreto
+      # imagePullSecrets:
+      # - name: acr-secret
 
