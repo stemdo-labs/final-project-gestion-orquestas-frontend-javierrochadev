@@ -75,6 +75,7 @@ runs:
       run: |
         kubectl delete svc backend-service -n default
         kubectl delete deploy backend-app -n default
+        kubectl delete secret acr-secret -n default
       shell: bash
 
     - name: Deploy with Helm
