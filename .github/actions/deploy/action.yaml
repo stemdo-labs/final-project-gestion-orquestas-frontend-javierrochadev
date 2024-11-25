@@ -42,7 +42,23 @@ inputs:
     required: true
     type: string
   acr_secret_name:
-    description: 'Secret acr name'
+    description: 'Kubernetes secret for ACR'
+    required: true
+    type: string
+  harbor_ip:
+    description: 'URL of the Harbor registry to download Helm'
+    required: true
+    type: string
+  harbor_username:
+    description: 'Username for Harbor'
+    required: true
+    type: string
+  harbor_password:
+    description: 'Password for Harbor'
+    required: true
+    type: string
+  chart_name:
+    description: 'Password for Harbor'
     required: true
     type: string
 
@@ -51,10 +67,7 @@ runs:
   steps:
     - name: Checkout code
       uses: actions/checkout@v3
-    - name: Print input values
-      run: |
-        echo "Helm path: ${{ inputs.helm_chart_path }}"
-      shell: bash
+
     - name: Login to Azure with Service Principal
       run: |
         az login --service-principal \
@@ -62,29 +75,22 @@ runs:
           -p ${{ inputs.arm_client_secret }} \
           --tenant ${{ inputs.arm_tenant_id }}
       shell: bash
-  
+
     - name: Get AKS credentials
       run: |
         az aks get-credentials --resource-group ${{ inputs.aks_resource_group }} --name ${{ inputs.aks_cluster_name }}
       shell: bash
-    - name: Install Helm
+    - name: Helm Login
       run: |
-        curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+        helm registry login ${{ inputs.harbor_ip }} --username ${{ inputs.harbor_username }} --password ${{ inputs.harbor_password }}
       shell: bash
-    # - name: Delete Helm
-    #   run: |
-    #     kubectl delete svc backend-service -n default
-    #     kubectl delete deploy backend-app -n default
-    #     kubectl delete secret acr-secret -n default
-    #   shell: bash
 
     - name: Deploy with Helm
       run: |
-        helm upgrade --install ${GITHUB_SHA} ./manifests/frontend \
-        --namespace default \
+        helm upgrade --install ${{inputs.chart_name}} oci://${{inputs.harbor_ip}}/${{inputs.harbor_username}}/${{inputs.chart_name}} \
+          --namespace default \
       shell: bash
 
       # --set "image.repository=${{ inputs.acr_name }}.azurecr.io/${{ inputs.image_name }}" \
-      # --set "image.tag=${{ inputs.image_tag }}" \
-      # --set "image.pullSecret=${{ inputs.acr_secret_name }}" \
-      # --set "acr.dockerconfigjson=${{ inputs.acr_secret_name }}"
+      #     --set "image.tag=${{ inputs.image_tag }}" \
+      #     --set "image.pullSecret=${{ inputs.acr_secret_name }}"
