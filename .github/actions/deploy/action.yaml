@@ -85,8 +85,10 @@ runs:
       run: |
         helm upgrade --install ${{inputs.chart_name}} oci://${{inputs.harbor_ip}}/${{inputs.harbor_username}}/${{inputs.chart_name}} \
           --namespace default \
+          --set "image.tag=${{ inputs.image_tag }}" \
+          --set "image.repository=jrochadev/frontend" \
       shell: bash
-
-      # --set "image.repository=${{ inputs.acr_name }}.azurecr.io/${{ inputs.image_name }}" \
+          
+          # --set "image.repository=${{ inputs.acr_name }}.azurecr.io/${{ inputs.image_name }}" \
       #     --set "image.tag=${{ inputs.image_tag }}" \
       #     --set "image.pullSecret=${{ inputs.acr_secret_name }}"
