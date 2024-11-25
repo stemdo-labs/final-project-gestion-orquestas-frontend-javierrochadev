@@ -1,3 +1,4 @@
+# .github/workflows/main-deploy.yaml
 name: Main Deployment Workflow
 
 on:
@@ -12,6 +13,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
       - name: Check out repository
         uses: actions/checkout@v3
 
@@ -21,7 +23,6 @@ jobs:
           chmod +x ./upload_version.sh
 
       - name: Extract and increment version
-        id: extract_version
         run: |
           NEW_VERSION=$(./extract_version.sh)
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
@@ -30,25 +31,33 @@ jobs:
         run: |
           ./upload_version.sh "$NEW_VERSION"
 
-      - name: Build and Push Docker Image
-        uses: docker/build-push-action@v4
+      # - name: Imprimir la versión extraída
+      #   id: show_version
+      #   run: echo "La versión es: ${{ steps.extract_version.outputs.version }}"
+
+      # - name: Build and Push Docker Image
+      #   uses: ./.github/actions/upload_image
+      #   with:
+      #     acr_name: ${{ secrets.ACR_NAME }}
+      #     image_name: "myapp-frontend"
+      #     image_tag: "4.0.0"
+      #     arm_client_id: ${{ secrets.ARM_CLIENT_ID }}
+      #     arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
+      #     arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}
+
+      - name: Upload an image 
+        uses: ./.github/actions/deploy
         with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ${{ secrets.ACR_NAME }}/myapp-frontend:${{ env.NEW_VERSION }}
-
-      - name: Deploy to Kubernetes
-        run: |
-          helm upgrade --install frontend ./charts/frontend \
-          --namespace default \
-          --set image.repository=${{ secrets.ACR_NAME }}/myapp-frontend \
-          --set image.tag=${{ env.NEW_VERSION }} \
-          --set acr.username=${{ secrets.HARBOR_USER }} \
-          --set acr.password=${{ secrets.HARBOR_PASS }} \
-          --set acr.server=${{ secrets.HARBOR_IP }} \
-          --set acr.secretName=${{ secrets.ACR_SECRET_NAME }} \
-          --set aks.clusterName=${{ secrets.AKS_NAME }} \
-          --set aks.resourceGroup=${{ secrets.RESOURCE_GROUP_NAME }} \
-          --set nodeSelector.kubernetes.io/os=linux
-
+          acr_name: ${{ secrets.ACR_NAME }}
+          image_name: "myapp-frontend"
+          image_tag: "${{ env.NEW_VERSION }}"
+          arm_client_id: ${{ secrets.ARM_CLIENT_ID }}
+          arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
+          arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}
+          aks_resource_group: ${{ secrets.RESOURCE_GROUP_NAME }}
+          aks_cluster_name: ${{ secrets.AKS_NAME }}
+          acr_secret_name: ${{ secrets.ACR_SECRET_NAME }}
+          chart_name: "frontend"
+          harbor_username: ${{ secrets.HARBOR_USER }}
+          harbor_password: ${{ secrets.HARBOR_PASS }}
+          harbor_ip: ${{ secrets.HARBOR_IP }}
