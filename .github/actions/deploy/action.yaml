@@ -37,10 +37,6 @@ inputs:
     description: 'Azure AKS Cluster Name'
     required: true
     type: string
-  helm_chart_path:
-    description: 'Path to Helm chart directory'
-    required: true
-    type: string
   acr_secret_name:
     description: 'Kubernetes secret for ACR'
     required: true
