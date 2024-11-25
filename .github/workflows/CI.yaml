@@ -44,7 +44,7 @@ jobs:
           aks_resource_group: ${{ secrets.RESOURCE_GROUP_NAME }}
           aks_cluster_name: ${{ secrets.AKS_NAME }}
           acr_secret_name: ${{ secrets.ACR_SECRET_NAME }}
-          chart_name: "fontend"
+          chart_name: "frontend"
           harbor_username: ${{ secrets.HARBOR_USER }}
           harbor_password: ${{ secrets.HARBOR_PASS }}
           harbor_ip: ${{ secrets.HARBOR_IP }}
