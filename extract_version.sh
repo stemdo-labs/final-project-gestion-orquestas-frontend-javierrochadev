@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Archivo JSON del cual extraer y modificar la versión
+# Archivo JSON del cual extraer la versión
 JSON_FILE="package.json"
 
 # Comprobar si el archivo existe
@@ -9,7 +9,7 @@ if [[ ! -f "$JSON_FILE" ]]; then
     exit 1
 fi
 
-# Extraer el valor actual de "version" usando jq o sed
+# Extraer el valor actual de "version" usando jq
 CURRENT_VERSION=$(jq -r '.version' "$JSON_FILE")
 
 # Comprobar si se ha obtenido la versión correctamente
@@ -18,29 +18,5 @@ if [[ -z "$CURRENT_VERSION" ]]; then
     exit 1
 fi
 
-# Separar la versión en partes (Major, Minor, Patch)
-IFS='.' read -r MAJOR MIDDLE MINOR <<< "$CURRENT_VERSION"
-
-# Incrementar la versión
-if [[ $MINOR -lt 9 ]]; then
-    MINOR=$((MINOR + 1))
-else
-    MINOR=0
-    if [[ $MIDDLE -lt 9 ]]; then
-        MIDDLE=$((MIDDLE + 1))
-    else
-        MIDDLE=0
-        if [[ $MAJOR -lt 9 ]]; then
-            MAJOR=$((MAJOR + 1))
-        else
-            echo "¡La versión ha alcanzado su límite máximo! 9.9.9"
-            exit 1
-        fi
-    fi
-fi
-
-# Nueva versión
-NEW_VERSION="$MAJOR.$MIDDLE.$MINOR"
-
-# Mostrar la nueva versión
-echo "$NEW_VERSION"
+# Mostrar la versión extraída
+echo "$CURRENT_VERSION"
