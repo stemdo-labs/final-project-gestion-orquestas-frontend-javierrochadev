@@ -63,6 +63,10 @@ runs:
   steps:
     - name: Checkout code
       uses: actions/checkout@v3
+    - name: Install Azure CLI
+      run: |
+        curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+      shell: bash
 
     - name: Login to Azure with Service Principal
       run: |
@@ -71,22 +75,54 @@ runs:
           -p ${{ inputs.arm_client_secret }} \
           --tenant ${{ inputs.arm_tenant_id }}
       shell: bash
+    - name: Install kubectl using the official script
+      run: |
+        curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+        sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+        kubectl version --client
+      shell: bash
+    
+
+    - name: Install Helm
+      shell: bash
+      run: |
+        curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
 
     - name: Get AKS credentials
       run: |
         az aks get-credentials --resource-group ${{ inputs.aks_resource_group }} --name ${{ inputs.aks_cluster_name }}
       shell: bash
+    - name: Log in to ACR
+      run: |
+        az acr login --name ${{ inputs.acr_name }}
+      shell: bash
     - name: Helm Login
       run: |
         helm registry login ${{ inputs.harbor_ip }} --username ${{ inputs.harbor_username }} --password ${{ inputs.harbor_password }}
+      shell: bash
+    - name: Delete secret if exists
+      run: |
+        kubectl delete secret ${{inputs.acr_secret_name}} --ignore-not-found 
+      shell: bash
+
+    
+    - name: Create Docker registry secret in default namespace
+      run: |
+        kubectl create secret docker-registry ${{ inputs.acr_secret_name}} \
+          --docker-server=*${{ inputs.acr_name}}.azurecr.io \
+          --docker-username=${{ inputs.arm_client_id }} \
+          --docker-password=${{ inputs.arm_client_secret }} \
+          --namespace=default
       shell: bash
 
     - name: Deploy with Helm
       run: |
         helm upgrade --install ${{inputs.chart_name}} oci://${{inputs.harbor_ip}}/${{inputs.harbor_username}}/${{inputs.chart_name}} \
           --namespace default \
-          --set "image.tag=latest" \
-          --set "image.repository=jrochadev/mi-nginx-vue-app" \
+          --set "image.repository=${{ inputs.acr_name }}.azurecr.io/${{ inputs.image_name }}" \
+          --set "image.tag=${{ inputs.image_tag }}" \
+          --set "image.pullSecret=${{ inputs.acr_secret_name }}"
       shell: bash
           
           # --set "image.repository=${{ inputs.acr_name }}.azurecr.io/${{ inputs.image_name }}" \
