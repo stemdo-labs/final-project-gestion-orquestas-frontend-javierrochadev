@@ -35,7 +35,7 @@ jobs:
         with:
           acr_name: ${{ secrets.ACR_NAME }}
           image_name: "myapp-frontend"
-          image_tag: "4.0.0"
+          image_tag: "${{ env.NEW_VERSION }}"
           arm_client_id: ${{ secrets.ARM_CLIENT_ID }}
           arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
           arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}
