@@ -1,3 +1,5 @@
+
+
 name: CI CD Pipeline
 
 on:
@@ -6,6 +8,8 @@ on:
 jobs:
   deploy:
     runs-on: runner-stemdo-labs
+    outputs:
+      NEW_VERSION: ${{ steps.extract_version.outputs.NEW_VERSION }}
 
     steps:
       - name: Set up Node.js
@@ -21,38 +25,47 @@ jobs:
           chmod +x ./extract_version.sh
           chmod +x ./upload_version.sh
 
-      - name: Extract and increment version
+      - id : extract_version 
+        name: Extract and increment version
         run: |
           NEW_VERSION=$(./extract_version.sh)
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
 
       - name: Upload version into file
         run: |
           ./upload_version.sh "$NEW_VERSION"
+  call_frontend_ci:
+    needs: deploy
+    uses: stemdo-labs/final-project-exercise-javierrochadev/.github/workflows/frontend-CI.yaml@main
+    with:
+      image_tag: "${{ needs.deploy.outputs.NEW_VERSION }}" 
+      image_name: "myapp-frontend"
+    secrets:
+      acr_name: ${{ secrets.ACR_NAME }}
+      arm_client_id: ${{ secrets.ARM_CLIENT_ID }}
+      arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
+      arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}
 
-      # - name: Build and Push Docker Image
-      #   uses: ./.github/actions/CI
-      #   with:
-      #     acr_name: ${{ secrets.ACR_NAME }}
-      #     image_name: "myapp-frontend"
-      #     image_tag: "${{ env.NEW_VERSION }}"
-      #     arm_client_id: ${{ secrets.ARM_CLIENT_ID }}
-      #     arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
-      #     arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}
+  call_frontend_cd:
+    needs:
+      - deploy
+      - call_frontend_ci
+    uses: stemdo-labs/final-project-exercise-javierrochadev/.github/workflows/frontend-CD.yaml@main
+    with:
+      image_name: "myapp-frontend"
+      chart_name: "frontend"
+      image_tag: "${{ needs.deploy.outputs.NEW_VERSION }}" 
+    secrets:
+      acr_name: ${{ secrets.ACR_NAME }}
+      arm_client_id: ${{ secrets.ARM_CLIENT_ID }}
+      arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
+      arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}
+      aks_resource_group: ${{ secrets.RESOURCE_GROUP_NAME }}
+      aks_cluster_name: ${{ secrets.AKS_NAME }}
+      acr_secret_name: ${{ secrets.ACR_SECRET_NAME }}
+      harbor_username: ${{ secrets.HARBOR_USER }}
+      harbor_password: ${{ secrets.HARBOR_PASS }}
+      harbor_ip: ${{ secrets.HARBOR_IP }}
 
-      - name: Upload an image 
-        uses: ./.github/actions/CD
-        with:
-          acr_name: ${{ secrets.ACR_NAME }}
-          image_name: "myapp-frontend"
-          image_tag: "${{ env.NEW_VERSION }}"
-          arm_client_id: ${{ secrets.ARM_CLIENT_ID }}
-          arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
-          arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}
-          aks_resource_group: ${{ secrets.RESOURCE_GROUP_NAME }}
-          aks_cluster_name: ${{ secrets.AKS_NAME }}
-          acr_secret_name: ${{ secrets.ACR_SECRET_NAME }}
-          chart_name: "frontend"
-          harbor_username: ${{ secrets.HARBOR_USER }}
-          harbor_password: ${{ secrets.HARBOR_PASS }}
-          harbor_ip: ${{ secrets.HARBOR_IP }}
+     
