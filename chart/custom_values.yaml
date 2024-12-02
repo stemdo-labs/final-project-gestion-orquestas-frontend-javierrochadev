@@ -1,0 +1,39 @@
+# Valores por defecto para el backend.
+# Este es un archivo formateado en YAML.
+# Declara las variables que se pasarán a tus plantillas.
+
+# Esto configurará el número de réplicas de los pods.
+# Más información sobre ReplicaSets se puede encontrar aquí: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
+replicaCount: 1  # Número de pods que se desplegarán para esta aplicación
+
+# Configuración de la imagen
+# Estos valores definen la imagen Docker que se usará para la aplicación backend
+image:
+  repository: "myacrjrochadev.azure.io/myapp-frontend"  # El repositorio de Docker (por ejemplo, "myrepo/myapp")
+  tag: ""         # La etiqueta de la imagen Docker (por ejemplo, "latest", "v1.0.0")
+  pullSecret: ""  # Opcional: Secreto de Kubernetes para obtener la imagen de un repositorio privado (por ejemplo, "my-secret")
+
+# Configuración de Azure Container Registry (ACR)
+# Esto se utiliza para autenticar y obtener imágenes del Registro de Contenedores de Azure
+acr:
+  dockerconfigjson: ""  # Secreto de Kubernetes que contiene las credenciales de ACR (usualmente en formato JSON)
+
+# Configuración de escalado automático para la aplicación backend
+# Esto habilita y configura el escalado horizontal de pods en función del uso de CPU
+autoscaling:
+   enabled: true  # Habilita o deshabilita el escalado automático (true/false)
+   minReplicas: ""  # Número mínimo de réplicas para la aplicación (en caso de bajo tráfico)
+   maxReplicas: ""  # Número máximo de réplicas para la aplicación (en caso de alto tráfico)
+   targetCPUUtilizationPercentage: ""  # El porcentaje de uso de CPU objetivo para escalar (por ejemplo, escalar si el uso supera el 60%)
+
+# Sondeos para comprobar la salud de la aplicación
+# El readinessProbe verifica si la aplicación está lista para recibir tráfico
+probes:
+  readinessProbe:
+    httpGet:
+      path: /""  # El endpoint HTTP que Kubernetes consultará para verificar si la aplicación está saludable
+      port: ""       # El puerto en el que está disponible el endpoint de salud
+    initialDelaySeconds: ""  # Tiempo de espera antes de hacer la primera comprobación de salud después de que el contenedor se inicie (en segundos)
+    periodSeconds: ""         # Intervalo entre cada comprobación de salud subsecuente (en segundos)
+    timeoutSeconds: ""        # Tiempo máximo para esperar la respuesta de la comprobación de salud (en segundos)
+    failureThreshold: ""      # Número de comprobaciones fallidas consecutivas antes de marcar el contenedor como no saludable
