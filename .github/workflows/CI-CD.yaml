@@ -37,28 +37,28 @@ jobs:
       - name: Upload version into file
         run: |
           ./upload_version.sh "$NEW_VERSION"
-  call_frontend_ci:
-    needs: deploy
-    uses: stemdo-labs/final-project-exercise-javierrochadev/.github/workflows/frontend-CI.yaml@main
-    with:
-      image_tag: "${{ needs.deploy.outputs.NEW_VERSION }}" 
-      image_name: "myapp-frontend"
-    secrets:
-      acr_name: ${{ secrets.ACR_NAME }}
-      arm_client_id: ${{ secrets.ARM_CLIENT_ID }}
-      arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
-      arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}
+  #call_frontend_ci:
+  #  needs: deploy
+  #  uses: stemdo-labs/final-project-exercise-javierrochadev/.github/workflows/frontend-CI.yaml@main
+  #  with:
+  #    image_tag: "${{ needs.deploy.outputs.NEW_VERSION }}" 
+  #    image_name: "myapp-frontend"
+  #  secrets:
+  #    acr_name: ${{ secrets.ACR_NAME }}
+  #    arm_client_id: ${{ secrets.ARM_CLIENT_ID }}
+  #    arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
+  #    arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}
 
   call_frontend_cd:
     needs:
       - deploy
-      - call_frontend_ci
+      # - call_frontend_ci
     uses: stemdo-labs/final-project-exercise-javierrochadev/.github/workflows/frontend-CD.yaml@main
     with:
       image_name: "myapp-frontend"
       chart_name: "frontend"
       image_tag: "${{ needs.deploy.outputs.NEW_VERSION }}"
-      namespace: "${{ vars.NAMESPACE}}"
+      namespace: "${{ vars.NAMESPACE }}"
     secrets:
       acr_name: ${{ secrets.ACR_NAME }}
       arm_client_id: ${{ secrets.ARM_CLIENT_ID }}
