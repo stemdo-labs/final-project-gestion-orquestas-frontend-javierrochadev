@@ -28,7 +28,7 @@
                 <article>
                     <div>
                         <h1>Charagua</h1>
-                        <h2>Suena la orilla</h2>
+                        <h2>David donde te sentastes?</h2>
                     </div>
                     <div>
                         <h3>Últimas noticias</h3>
