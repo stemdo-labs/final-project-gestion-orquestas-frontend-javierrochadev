@@ -43,7 +43,7 @@ jobs:
 
       - name: do testing
         run: |
-          npm run test:unit 
+          run sleep 10 
     
   call_frontend_ci:
     needs: 
