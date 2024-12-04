@@ -14,10 +14,10 @@ jobs:
       NEW_VERSION: ${{ steps.extract_version.outputs.NEW_VERSION }}
 
     steps:
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+      #- name: Set up Node.js
+      #  uses: actions/setup-node@v4
+      #  with:
+      #    node-version: '20'
 
       - name: Check out repository
         uses: actions/checkout@v3
@@ -67,12 +67,14 @@ jobs:
     with:
       image_name: "myapp-frontend"
       chart_name: "frontend"
-      image_tag: "${{ needs.deploy.outputs.NEW_VERSION }}" 
+      image_tag: "${{ needs.deploy.outputs.NEW_VERSION }}"
+      namespace: "${{ vars.NAMESPACE }}"
     secrets:
       acr_name: ${{ secrets.ACR_NAME }}
       arm_client_id: ${{ secrets.ARM_CLIENT_ID }}
       arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
       arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}
+      arm_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       aks_resource_group: ${{ secrets.RESOURCE_GROUP_NAME }}
       aks_cluster_name: ${{ secrets.AKS_NAME }}
       acr_secret_name: ${{ secrets.ACR_SECRET_NAME }}
