@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 jobs:
   deploy:
-    runs-on: runner-stemdo-labs
+    runs-on: ubuntu-latest
     outputs:
       NEW_VERSION: ${{ steps.extract_version.outputs.NEW_VERSION }}
 
@@ -37,8 +37,18 @@ jobs:
       - name: Upload version into file
         run: |
           ./upload_version.sh "$NEW_VERSION"
+  testing:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: do testing
+        run: |
+          npm run example.spec.js
+        working-directory: ./tests/unit
+    
   call_frontend_ci:
-    needs: deploy
+    needs: 
+      - deploy
+      - testing
     uses: stemdo-labs/final-project-exercise-javierrochadev/.github/workflows/frontend-CI.yaml@main
     with:
       image_tag: "${{ needs.deploy.outputs.NEW_VERSION }}" 
