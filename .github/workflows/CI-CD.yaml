@@ -41,9 +41,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      - name: do testing
-        run: |
-          run sleep 10 
+      
     
   call_frontend_ci:
     needs: 
