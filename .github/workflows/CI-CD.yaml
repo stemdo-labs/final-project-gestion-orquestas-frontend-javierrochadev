@@ -68,7 +68,7 @@ jobs:
   call_frontend_cd:
     needs:
       - extract_version
-      - call_frontend_ci
+      # - call_frontend_ci
     uses: stemdo-labs/final-project-exercise-javierrochadev/.github/workflows/frontend-CD.yaml@main
     with:
       image_name: "myapp-frontend"
