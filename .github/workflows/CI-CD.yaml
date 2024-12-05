@@ -72,7 +72,7 @@ jobs:
     uses: stemdo-labs/final-project-exercise-javierrochadev/.github/workflows/frontend-CD.yaml@main
     with:
       image_name: "myapp-frontend"
-      chart_name: "frontend"
+      chart_name: "frontend-app"
       image_tag: "${{ needs.extract_version.outputs.NEW_VERSION }}" 
       namespace: "${{ vars.NAMESPACE }}"
     secrets:
