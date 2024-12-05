@@ -1,5 +1,3 @@
-
-
 name: CI CD Pipeline
 
 on:
@@ -32,38 +30,38 @@ jobs:
       - name: Upload version into file
         run: |
           ./upload_version.sh "$NEW_VERSION"
-  # testing:
-  #   runs-on: ubuntu-latest
-  #   needs:
-  #     - extract_version
-  #   steps: 
-# 
-  #     - name: Check out repository
-  #       uses: actions/checkout@v3
-  #     
-  #     - name: Install package and dependencies
-  #       run: |
-  #         apt install npm -y 
-  #         npm install --save-dev @vue/cli-service
-# 
-  #     - name: Do testing on component
-  #       run: |
-  #         npm run test:unit
 
-    
-  # call_frontend_ci:
-  #   needs: 
-  #     - extract_version
-  #     - testing
-  #   uses: stemdo-labs/final-project-exercise-javierrochadev/.github/workflows/frontend-CI.yaml@main
-  #   with:
-  #     image_tag: "${{ needs.extract_version.outputs.NEW_VERSION }}" 
-  #     image_name: "myapp-frontend"
-  #   secrets:
-  #     acr_name: ${{ secrets.ACR_NAME }}
-  #     arm_client_id: ${{ secrets.ARM_CLIENT_ID }}
-  #     arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
-  #     arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}
+ #  testing:
+ #    runs-on: ubuntu-latest
+ #    needs:
+ #      - extract_version
+ #    steps: 
+# 
+ #      - name: Check out repository
+ #        uses: actions/checkout@v3
+ #      
+ #      - name: Install package and dependencies
+ #        run: |
+ #          sudo apt install npm -y 
+ #          sudo npm install --save-dev @vue/cli-service
+# 
+ #      - name: Do testing on component
+ #        run: |
+ #          npm run test:unit
+ #    
+ #  call_frontend_ci:
+ #    needs: 
+ #      - extract_version
+ #      - testing
+ #    uses: stemdo-labs/final-project-exercise-javierrochadev/.github/workflows/frontend-CI.yaml@main
+ #    with:
+ #      image_tag: "${{ needs.extract_version.outputs.NEW_VERSION }}" 
+ #      image_name: "myapp-frontend"
+ #    secrets:
+ #      acr_name: ${{ secrets.ACR_NAME }}
+ #      arm_client_id: ${{ secrets.ARM_CLIENT_ID }}
+ #      arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
+ #      arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}
 
   call_frontend_cd:
     needs:
