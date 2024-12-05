@@ -43,8 +43,8 @@ jobs:
       
       - name: Install package and dependencies
         run: |
-          apt install npm -y 
-          npm install --save-dev @vue/cli-service
+          sudo apt install npm -y 
+          sudo npm install --save-dev @vue/cli-service
 
       - name: Do testing on component
         run: |
