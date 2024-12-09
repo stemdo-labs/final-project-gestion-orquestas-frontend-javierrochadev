@@ -51,21 +51,21 @@ jobs:
   #       run: |
   #         npm run test:unit
     
-  call_frontend_ci:
-    needs: 
-      - extract_version
-      # - testing
-    uses: stemdo-labs/final-project-exercise-javierrochadev/.github/workflows/frontend-CI.yaml@main
-    with:
-      image_tag: "${{ needs.extract_version.outputs.NEW_VERSION }}" 
-      image_name: "myapp-frontend"
-      release_env: ${{ github.ref == 'refs/heads/main' && 'pro' || 'dev' }}
-      release_name: "frontend"
-    secrets:
-      acr_name: ${{ secrets.ACR_NAME }}
-      arm_client_id: ${{ secrets.ARM_CLIENT_ID }}
-      arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
-      arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}
+  # call_frontend_ci:
+  #   needs: 
+  #     - extract_version
+  #     # - testing
+  #   uses: stemdo-labs/final-project-exercise-javierrochadev/.github/workflows/frontend-CI.yaml@main
+  #   with:
+  #     image_tag: "${{ needs.extract_version.outputs.NEW_VERSION }}" 
+  #     image_name: "myapp-frontend"
+  #     release_env: ${{ github.ref == 'refs/heads/main' && 'pro' || 'dev' }}
+  #     release_name: "frontend"
+  #   secrets:
+  #     acr_name: ${{ secrets.ACR_NAME }}
+  #     arm_client_id: ${{ secrets.ARM_CLIENT_ID }}
+  #     arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
+  #     arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}
  
   call_frontend_cd:
     needs:
