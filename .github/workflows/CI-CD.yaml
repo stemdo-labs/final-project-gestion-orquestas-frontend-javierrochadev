@@ -31,23 +31,25 @@ jobs:
         run: |
           ./upload_version.sh "$NEW_VERSION"
 
-  # testing:
-  #   runs-on: ubuntu-latest
-  #   needs:
-  #     - extract_version
-  #   steps: 
-# 
-  #     - name: Check out repository
-  #       uses: actions/checkout@v3
-  #     
-  #     - name: Install package and dependencies
-  #       run: |
-  #         sudo apt install npm -y 
-  #         sudo npm install --save-dev @vue/cli-service
-# 
-  #     - name: Do testing on component
-  #       run: |
-  #         npm run test:unit
+  testing:
+    runs-on: ubuntu-latest
+    needs:
+      - extract_version
+    environment: Production
+    if: github.ref == 'refs/heads/main'
+    steps: 
+ 
+      - name: Check out repository
+        uses: actions/checkout@v3
+      
+      - name: Install package and dependencies
+        run: |
+          sudo apt install npm -y 
+          sudo npm install --save-dev @vue/cli-service
+ 
+      - name: Do testing on component
+        run: |
+          npm run test:unit
     
   # call_frontend_ci:
   #   needs: 
