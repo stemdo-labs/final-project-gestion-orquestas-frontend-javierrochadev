@@ -31,59 +31,59 @@ jobs:
         run: |
           ./upload_version.sh "$NEW_VERSION"
 
- #  testing:
- #    runs-on: ubuntu-latest
- #    needs:
- #      - extract_version
- #    steps: 
-# 
- #      - name: Check out repository
- #        uses: actions/checkout@v3
- #      
- #      - name: Install package and dependencies
- #        run: |
- #          sudo apt install npm -y 
- #          sudo npm install --save-dev @vue/cli-service
-# 
- #      - name: Do testing on component
- #        run: |
- #          npm run test:unit
- #    
-  call_frontend_ci:
-    needs: 
-      - extract_version
-      # - testing
-    uses: stemdo-labs/final-project-exercise-javierrochadev/.github/workflows/frontend-CI.yaml@main
-    with:
-      image_tag: "${{ needs.extract_version.outputs.NEW_VERSION }}" 
-      image_name: "myapp-frontend"
-    secrets:
-      acr_name: ${{ secrets.ACR_NAME }}
-      arm_client_id: ${{ secrets.ARM_CLIENT_ID }}
-      arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
-      arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}
-
-  call_frontend_cd:
+  testing:
+    runs-on: ubuntu-latest
     needs:
       - extract_version
-      - call_frontend_ci
-    uses: stemdo-labs/final-project-exercise-javierrochadev/.github/workflows/frontend-CD.yaml@main
-    with:
-      image_name: "myapp-frontend"
-      chart_name: "frontend"
-      image_tag: "${{ needs.extract_version.outputs.NEW_VERSION }}" 
-      namespace: "${{ vars.NAMESPACE }}"
-    secrets:
-      acr_name: ${{ secrets.ACR_NAME }}
-      arm_client_id: ${{ secrets.ARM_CLIENT_ID }}
-      arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
-      arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}
-      arm_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-      aks_resource_group: ${{ secrets.RESOURCE_GROUP_NAME }}
-      aks_cluster_name: ${{ secrets.AKS_NAME }}
-      acr_secret_name: ${{ secrets.ACR_SECRET_NAME }}
-      harbor_username: ${{ secrets.HARBOR_USER }}
-      harbor_password: ${{ secrets.HARBOR_PASS }}
-      harbor_ip: ${{ secrets.HARBOR_IP }}
+    steps: 
+
+      - name: Check out repository
+        uses: actions/checkout@v3
+      
+      - name: Install package and dependencies
+        run: |
+          sudo apt install npm -y 
+          sudo npm install --save-dev @vue/cli-service
+
+      - name: Do testing on component
+        run: |
+          npm run test:unit
+    
+  # call_frontend_ci:
+  #   needs: 
+  #     - extract_version
+  #     - testing
+  #   uses: stemdo-labs/final-project-exercise-javierrochadev/.github/workflows/frontend-CI.yaml@main
+  #   with:
+  #     image_tag: "${{ needs.extract_version.outputs.NEW_VERSION }}" 
+  #     image_name: "myapp-frontend"
+  #   secrets:
+  #     acr_name: ${{ secrets.ACR_NAME }}
+  #     arm_client_id: ${{ secrets.ARM_CLIENT_ID }}
+  #     arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
+  #     arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}
+# 
+  # call_frontend_cd:
+  #   needs:
+  #     - extract_version
+  #     - call_frontend_ci
+  #   uses: stemdo-labs/final-project-exercise-javierrochadev/.github/workflows/frontend-CD.yaml@main
+  #   with:
+  #     image_name: "myapp-frontend"
+  #     chart_name: "frontend"
+  #     image_tag: "${{ needs.extract_version.outputs.NEW_VERSION }}" 
+  #     namespace: "${{ vars.NAMESPACE }}"
+  #   secrets:
+  #     acr_name: ${{ secrets.ACR_NAME }}
+  #     arm_client_id: ${{ secrets.ARM_CLIENT_ID }}
+  #     arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
+  #     arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}
+  #     arm_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+  #     aks_resource_group: ${{ secrets.RESOURCE_GROUP_NAME }}
+  #     aks_cluster_name: ${{ secrets.AKS_NAME }}
+  #     acr_secret_name: ${{ secrets.ACR_SECRET_NAME }}
+  #     harbor_username: ${{ secrets.HARBOR_USER }}
+  #     harbor_password: ${{ secrets.HARBOR_PASS }}
+  #     harbor_ip: ${{ secrets.HARBOR_IP }}
 
      
