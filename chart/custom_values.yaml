@@ -31,9 +31,9 @@ autoscaling:
 probes:
   readinessProbe:
     httpGet:
-      path: ""  # El endpoint HTTP que Kubernetes consultará para verificar si la aplicación está saludable
-      port: ""       # El puerto en el que está disponible el endpoint de salud
-    initialDelaySeconds: ""  # Tiempo de espera antes de hacer la primera comprobación de salud después de que el contenedor se inicie (en segundos)
-    periodSeconds: ""         # Intervalo entre cada comprobación de salud subsecuente (en segundos)
-    timeoutSeconds: ""        # Tiempo máximo para esperar la respuesta de la comprobación de salud (en segundos)
-    failureThreshold: ""      # Número de comprobaciones fallidas consecutivas antes de marcar el contenedor como no saludable
+      path: "/healthz"  # El endpoint HTTP que Kubernetes consultará para verificar si la aplicación está saludable
+      port: "80"       # El puerto en el que está disponible el endpoint de salud
+    initialDelaySeconds: 5  # Tiempo de espera antes de hacer la primera comprobación de salud después de que el contenedor se inicie (en segundos)
+    periodSeconds: 5         # Intervalo entre cada comprobación de salud subsecuente (en segundos)
+    timeoutSeconds: 3        # Tiempo máximo para esperar la respuesta de la comprobación de salud (en segundos)
+    failureThreshold: 3      # Número de comprobaciones fallidas consecutivas antes de marcar el contenedor como no saludable
