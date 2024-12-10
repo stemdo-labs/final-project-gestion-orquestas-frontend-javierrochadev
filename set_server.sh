@@ -19,7 +19,8 @@ if [ ! -f "$NGINX_CONFIG" ]; then
 fi
 
 # Usar sed para reemplazar el valor de proxy_pass en el archivo de configuración
-sed -i "s|proxy_pass http://backend-service:8080;|proxy_pass $PROXY_PASS;|g" "$NGINX_CONFIG"
+# El script busca líneas que contengan 'proxy_pass' dentro de 'location /api/' y reemplaza la URL
+sed -i "/location \/api\/ {/,/}/s|proxy_pass .*;|proxy_pass $PROXY_PASS;|g" "$NGINX_CONFIG"
 
 # Verificar si el reemplazo fue exitoso
 if [ $? -eq 0 ]; then
@@ -28,7 +29,6 @@ else
   echo "Hubo un error al intentar actualizar el archivo de configuración."
   exit 1
 fi
-
 
 # Salir con éxito
 exit 0
